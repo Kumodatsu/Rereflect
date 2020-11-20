@@ -2,10 +2,11 @@ local addon_name, RR = ...
 
 -- Constants
 local C = {
-    EffectID        = 168657, -- 163267,
+    EffectID        = 163267, -- 168657,
     ItemID          = 112384,
+    ItemName        = "Reflecting Prism",
     BuffSearchCount = 40,
-    DurationMargin  = 2, -- 30,
+    DurationMargin  = 30, -- 2
     PopupName       = "RR_EXPIRATION_POPUP" 
 }
 
@@ -20,19 +21,33 @@ local get_effect_expiration = function(unit, effect_id)
     return nil
 end
 
+local is_about_to_expire = function(margin, expiration)
+    return expiration - GetTime() < margin
+end
+
 local is_effect_about_to_expire = function(unit, effect_id, margin)
     local expiration = get_effect_expiration(unit, effect_id)
     if not expiration then
         return nil
     end
-    return expiration - GetTime() < margin
+    return is_about_to_expire(margin, expiration)
 end
 
 -- Dialog
+local dialog = nil
+
+local popup_accept = function()
+    
+end
+
+local popup_cancel = function()
+    
+end
+
 StaticPopupDialogs[C.PopupName] = {
     text           = "Your reflecting prism is about to run out.",
-    button1        = "Yes",
-    button2        = "Yes (but on another button)",
+    button1        = "Okay",
+    button2        = nil, -- "Cancel",
     OnAccept       = popup_accept,
     OnCancel       = popup_cancel,
     timeout        = C.DurationMargin,
@@ -47,7 +62,14 @@ event_frame:RegisterEvent "ADDON_LOADED"
 event_frame:RegisterEvent "UNIT_AURA"
 
 event_frame.OnUpdate = function(self, dt)
-    
+    local expiration = get_effect_expiration("player", C.EffectID)
+    if not expiration then return end
+    local expiring = is_about_to_expire(C.DurationMargin, expiration)
+    if not dialog and expiring then
+        dialog = StaticPopup_Show(C.PopupName)
+    elseif dialog and not expiring then
+        dialog = StaticPopup_Hide(C.PopupName)
+    end
 end
 
 event_frame.OnEvent = function(self, event, arg1, arg2)
@@ -65,5 +87,6 @@ event_frame:SetScript("OnEvent",  event_frame.OnEvent)
 RR_API = {
     C                     = C,
     GetEffectExpiration   = get_effect_expiration,
+    IsAboutToExpire       = is_about_to_expire,
     IsEffectAboutToExpire = is_effect_about_to_expire
 }
