@@ -22,7 +22,10 @@ end
 
 local is_effect_about_to_expire = function(unit, effect_id, margin)
     local expiration = get_effect_expiration(unit, effect_id)
-    return expiration and expiration - GetTime() < margin or false
+    if not expiration then
+        return nil
+    end
+    return expiration - GetTime() < margin
 end
 
 -- Dialog
