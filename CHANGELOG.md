@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][changelog], and this project adheres
 to [Semantic Versioning][semver].
 
-## Unreleased
+## [0.1.2][] - 2021-11-23
 ### Added
 - A license file. The addon is now licensed under version 3 of the GNU General
 Public License. If you are not a software developer, you don't have to care
@@ -33,6 +33,7 @@ less remaining.
 ### Changed
 - Updated for World of Warcraft 9.1.0.
 
+[0.1.2]: <https://github.com/Kumodatsu/Rereflect/releases/tag/v0.1.2>
 [0.1.1]: <https://github.com/Kumodatsu/Rereflect/releases/tag/v0.1.1>
 
 [changelog]: <https://keepachangelog.com/en/1.0.0/>
