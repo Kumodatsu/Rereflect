@@ -2,11 +2,11 @@ local addon_name, RR = ...
 
 -- Constants
 local C = {
-    EffectID        = 163267, -- 168657,
+    EffectID        = 163267,
     ItemID          = 112384,
     ItemName        = "Reflecting Prism",
     BuffSearchCount = 40,
-    DurationMargin  = 30, -- 2
+    DurationMargin  = 30,
     PopupName       = "RR_EXPIRATION_POPUP" 
 }
 
@@ -36,13 +36,8 @@ end
 -- Dialog
 local dialog = nil
 
-local popup_accept = function()
-    
-end
-
-local popup_cancel = function()
-    
-end
+local popup_accept = function() end
+local popup_cancel = function() end
 
 StaticPopupDialogs[C.PopupName] = {
     text           = "Your reflecting prism is about to run out.",
@@ -57,9 +52,6 @@ StaticPopupDialogs[C.PopupName] = {
 
 -- Events and update
 local event_frame = CreateFrame("Frame", "RR_EVENT_FRAME", nil)
-
-event_frame:RegisterEvent "ADDON_LOADED"
-event_frame:RegisterEvent "UNIT_AURA"
 
 event_frame.OnUpdate = function(self, dt)
     local expiration = get_effect_expiration("player", C.EffectID)
