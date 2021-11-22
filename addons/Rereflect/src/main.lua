@@ -72,21 +72,7 @@ event_frame.OnUpdate = function(self, dt)
     end
 end
 
-event_frame.OnEvent = function(self, event, arg1, arg2)
-    if event == "ADDON_LOADED" and arg1 == addon_name then
-        
-    elseif event == "UNIT_AURA" and arg1 == "player" then
-        
-    end
-end
+event_frame.OnEvent = function(self, event, arg1, arg2) end
 
 event_frame:SetScript("OnUpdate", event_frame.OnUpdate)
 event_frame:SetScript("OnEvent",  event_frame.OnEvent)
-
--- Testing
-RR_API = {
-    C                     = C,
-    GetEffectExpiration   = get_effect_expiration,
-    IsAboutToExpire       = is_about_to_expire,
-    IsEffectAboutToExpire = is_effect_about_to_expire
-}
