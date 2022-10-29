@@ -1,70 +1,84 @@
 local addon_name, RR = ...
 
--- Constants
-local C = {
-    EffectID        = 163267,
-    ItemID          = 112384,
-    ItemName        = "Reflecting Prism",
-    BuffSearchCount = 40,
-    DurationMargin  = 30,
-    PopupName       = "RR_EXPIRATION_POPUP" 
+local INFINITY = math.huge
+
+local BUFF_SEARCH_COUNT = 40
+local DURATION_MARGIN   = 30 -- in seconds
+local POPUP_NAME        = "RR_EXPIRATION_POPUP"
+local EFFECTS           = {
+  163267, -- Reflecting Prism
+  121308, -- Disguise
 }
 
 -- Functions
-local get_effect_expiration = function(unit, effect_id)
-    for i = 1, C.BuffSearchCount do
-        local name, _, _, _, _, expiration, _, _, _, id = UnitBuff(unit, i)
-        if id == effect_id then
-            return expiration
-        end
+
+local function get_effect(effect_id)
+ for i = 1, BUFF_SEARCH_COUNT do
+    local name, _, _, _, _, expiration, _, _, _, id = UnitBuff("player", i)
+    if id == effect_id then
+      return i, name, expiration - GetTime(), id
     end
-    return nil
+  end
+  return nil
 end
 
-local is_about_to_expire = function(margin, expiration)
-    return expiration - GetTime() < margin
+local function is_about_to_expire(duration)
+  return duration < DURATION_MARGIN
 end
 
-local is_effect_about_to_expire = function(unit, effect_id, margin)
-    local expiration = get_effect_expiration(unit, effect_id)
-    if not expiration then
-        return nil
+local function get_longest_effect()
+  local effect_i, effect_name, effect_duration, effect_id
+  effect_duration = -INFINITY 
+  for _, effect in ipairs(EFFECTS) do
+    local i, name, duration, id = get_effect(effect)
+    if i and duration > effect_duration then
+      effect_i        = i
+      effect_name     = name
+      effect_duration = duration
+      effect_id       = id
     end
-    return is_about_to_expire(margin, expiration)
+  end
+  if not effect_i then return nil end
+  return effect_i, effect_name, effect_duration, effect_id
 end
 
 -- Dialog
+
 local dialog = nil
 
-local popup_accept = function() end
-local popup_cancel = function() end
-
-StaticPopupDialogs[C.PopupName] = {
-    text           = "Your reflecting prism is about to run out.",
-    button1        = "Okay",
-    button2        = nil, -- "Cancel",
-    OnAccept       = popup_accept,
-    OnCancel       = popup_cancel,
-    timeout        = C.DurationMargin,
-    whileDead      = false,
-    hideOnEscape   = false
+StaticPopupDialogs[POPUP_NAME] = {
+  text         = "Your %s is about to run out.",
+  button1      = "Dismiss",
+  OnAccept     = function() end,
+  OnCancel     = function() end,
+  timeout      = DURATION_MARGIN,
+  whileDead    = false,
+  hideOnEscape = false,
 }
 
 -- Events and update
 local event_frame = CreateFrame("Frame", "RR_EVENT_FRAME", nil)
 
-event_frame.OnUpdate = function(self, dt)
-    local expiration = get_effect_expiration("player", C.EffectID)
-    if not expiration then return end
-    local expiring = is_about_to_expire(C.DurationMargin, expiration)
-    if not dialog and expiring then
-        dialog = StaticPopup_Show(C.PopupName)
-    elseif dialog and not expiring then
-        dialog = StaticPopup_Hide(C.PopupName)
+local previous_id = nil
+function event_frame:OnUpdate(dt)
+  local index, name, duration, id = get_longest_effect()
+  if not index then
+    previous_duration = nil
+    if dialog then
+      StaticPopup_Hide(POPUP_NAME)
     end
+    return
+  end
+  if id ~= previous_id then
+    dialog = StaticPopup_Hide(POPUP_NAME)
+  end
+  previous_id = id
+  local expiring = is_about_to_expire(duration)
+  if not dialog and expiring then
+    dialog = StaticPopup_Show(POPUP_NAME, name)
+  elseif dialog and not expiring then
+    dialog = StaticPopup_Hide(POPUP_NAME)
+  end
 end
 
-event_frame.OnEvent = function(self, event, arg1, arg2) end
-
 event_frame:SetScript("OnUpdate", event_frame.OnUpdate)
-event_frame:SetScript("OnEvent",  event_frame.OnEvent)

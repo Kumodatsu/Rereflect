@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][changelog], and this project adheres
 to [Semantic Versioning][semver].
 
+## [1.0.0][] - 2022-10-29
+### Added
+- The Disguise effect (from a rogue's pickpocketing glyph) now also triggers the
+popup.
+
+### Changed
+- The popup now uses the buff's name rather than the item's name.
+
 ## [0.1.2][] - 2021-11-23
 ### Added
 - A license file. The addon is now licensed under version 3 of the GNU General
@@ -33,6 +41,7 @@ less remaining.
 ### Changed
 - Updated for World of Warcraft 9.1.0.
 
+[1.0.0]: <https://github.com/Kumodatsu/Rereflect/releases/tag/v1.0.0>
 [0.1.2]: <https://github.com/Kumodatsu/Rereflect/releases/tag/v0.1.2>
 [0.1.1]: <https://github.com/Kumodatsu/Rereflect/releases/tag/v0.1.1>
 

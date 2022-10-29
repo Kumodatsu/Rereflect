@@ -1,7 +1,7 @@
-## Interface: 90105
-## Title: Rereflect
-## Author: Kumodatsu
-## Version: 0.1.2
-## Notes: An addon that notifies you when your Reflecting Prism effect is about to run out.
+## Interface: 100000
+## Title:     Rereflect
+## Author:    Kumodatsu
+## Version:   1.0.0
+## Notes:     An addon that notifies you when your Reflecting Prism effect is about to run out.
 
 src\main.lua
