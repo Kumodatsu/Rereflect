@@ -51,7 +51,7 @@ jobs:
           release_name: Version ${{ steps.changelog.outputs.version }}
           body:         ${{ steps.format_changelog.outputs.value }}
           draft:        false
-          prerelease:   true
+          prerelease:   false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload zip to release assets
